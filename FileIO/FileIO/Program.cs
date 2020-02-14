@@ -7,12 +7,7 @@ namespace FileIO
     {
         static void Main(string[] args)
         {
-            string[] inputFileNames = {
-                "small",
-                "medium",
-                "large",
-                "larger"
-            };
+            string[] inputFileNames = { "a", "b", "c","d", "e" };
 
             foreach(string fileName in inputFileNames)
             {
@@ -21,7 +16,7 @@ namespace FileIO
                 string resultsBuffer = "";
                 //Process the list and assign results to resultsBuffer or something... 
 
-                FileIO.Write(resultsBuffer, fileName);
+                FileIO.Write(resultsBuffer, fileName, ".txt");
             }
         }
     }

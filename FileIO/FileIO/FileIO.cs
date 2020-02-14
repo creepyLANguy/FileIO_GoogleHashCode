@@ -78,8 +78,8 @@ namespace FileIO
             }
             catch(Exception e)
             {
-                Console.WriteLine("<!!><!!><!!>FAILED TO OPEN "
-                    + fullPath + "<!!><!!><!!>\r\n\r\n" + e.ToString());
+                Console.WriteLine("FAILED TO OPEN " + fullPath
+                    + "\r\n\r\n" + e.ToString());
             }
 
             return list;
@@ -119,7 +119,7 @@ namespace FileIO
             string fullPath = GetFullPath(name, extension, relativePath);
             try
             {
-                Console.WriteLine("Writing to " + fullPath);
+                Console.WriteLine("Attempting to write to " + fullPath);
                 if (append)
                 {
                     File.AppendAllText(fullPath, s);
@@ -134,8 +134,8 @@ namespace FileIO
             }
             catch (Exception e)
             {
-                Console.WriteLine("<!!><!!><!!>FAILED TO WRITE TO "
-                    + fullPath + "<!!><!!><!!>\r\n\r\n" + e.ToString());
+                Console.WriteLine("FAILED TO WRITE TO " + fullPath
+                    + "\r\n\r\n" + e.ToString());
 
                 return false;
             }
