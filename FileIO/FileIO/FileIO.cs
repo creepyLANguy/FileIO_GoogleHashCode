@@ -38,6 +38,19 @@ namespace FileIO
             string relativePath
             )
         {
+            if (Path.EndsInDirectorySeparator(relativePath) == false)
+            {
+                relativePath += Path.DirectorySeparatorChar;
+            }
+            if (extension.Length > 0 && extension[0] != '.')
+            {
+                extension += '.';
+            }
+            if (name.Contains(extension))
+            {
+                extension = "";
+            }
+
             return relativePath + name + extension;
         }
 
@@ -60,14 +73,14 @@ namespace FileIO
         {
             string fullPath = GetFullPath(name, extension, relativePath);
 
-            //if (File.Exists(fullPath) == false)
-            //{
-            //    throw new Exception("FILE NOT FOUND : " + fullPath);
-            //}
-
             List<string> list = new List<string>();
             try
             {
+                if (File.Exists(fullPath) == false)
+                {
+                    throw new Exception("FILE NOT FOUND : " + fullPath);
+                }
+
                 Console.WriteLine("Opening " + fullPath);
                 using StreamReader sr = File.OpenText(fullPath);
                 string s;
@@ -109,7 +122,7 @@ namespace FileIO
 
 
         public static bool Write(
-            string s,
+            string contents,
             string name,
             string extension = Defaults.EXTENSION,
             string relativePath = Defaults.PATH,
@@ -119,14 +132,19 @@ namespace FileIO
             string fullPath = GetFullPath(name, extension, relativePath);
             try
             {
+                //if (Directory.Exists(relativePath) == false)
+                {
+                    Directory.CreateDirectory(relativePath);
+                }
+
                 Console.WriteLine("Attempting to write to " + fullPath);
                 if (append)
                 {
-                    File.AppendAllText(fullPath, s);
+                    File.AppendAllText(fullPath, contents);
                 }
                 else
                 {
-                    File.WriteAllText(fullPath, s);
+                    File.WriteAllText(fullPath, contents);
                 }
                 Console.WriteLine("Successfully written to " + fullPath);
 
@@ -143,13 +161,13 @@ namespace FileIO
 
 
         public static bool Append(
-            string s,
+            string contents,
             string name,
             string extension = Defaults.EXTENSION,
             string relativePath = Defaults.PATH
             )
         {
-            return Write(s, name, extension, relativePath, true);
+            return Write(contents, name, extension, relativePath, true);
         }
 
     }

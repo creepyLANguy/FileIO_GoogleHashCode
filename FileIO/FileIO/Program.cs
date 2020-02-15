@@ -5,18 +5,41 @@ namespace FileIO
 {
     class Program
     {
+        public static string ProcessList(List<string> list)
+        {
+            string buffer = "";
+            foreach (var s in list)
+            {
+                buffer += s + "\r\n";
+            }
+            return buffer;
+        }
+
         static void Main(string[] args)
         {
-            string[] inputFileNames = { "a", "b", "c","d", "e" };
+            string[] inputFileNames =
+                {
+                    "a_example",
+                    "b_small",
+                    "c_medium",
+                    "d_quite_big",
+                    "e_also_big"
+                };
 
-            foreach(string fileName in inputFileNames)
+            string inputPath = "hashcode";
+
+            string outputPath = "results";
+
+            foreach (string fileName in inputFileNames)
             {
-                List<string> list = FileIO.Read(fileName);
+                List<string> list = FileIO.Read(fileName, relativePath: inputPath);
 
-                string resultsBuffer = "";
-                //Process the list and assign results to resultsBuffer or something... 
+                string resultsBuffer = ProcessList(list);
 
-                FileIO.Write(resultsBuffer, fileName, ".txt");
+                if (resultsBuffer.Length > 0)
+                {
+                    FileIO.Write(resultsBuffer, fileName, ".txt", relativePath: outputPath);
+                }
             }
         }
     }
