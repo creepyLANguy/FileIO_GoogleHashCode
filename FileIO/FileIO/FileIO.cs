@@ -182,7 +182,7 @@ namespace GoogleHashCode
 
         public static void Main(string[] args)
         {
-            string[] inputFileNames =
+            string[] inputFilenames =
                 {
                     "a_example",
                     "b_small",
@@ -194,16 +194,17 @@ namespace GoogleHashCode
             string inputPath = "hashcode";
 
             string outputPath = "results";
+            string outputExtension = ".txt";
 
-            foreach (string fileName in inputFileNames)
+            foreach (string filename in inputFilenames)
             {
-                List<string> list = FileIO.Read(fileName, relativePath: inputPath);
+                List<string> list = FileIO.Read(filename, relativePath: inputPath);
 
                 string resultsBuffer = ProcessList(list);
 
                 if (resultsBuffer.Length > 0)
                 {
-                    FileIO.Write(resultsBuffer, fileName, ".txt", relativePath: outputPath);
+                    FileIO.Write(resultsBuffer, filename, outputExtension, relativePath: outputPath);
                 }
             }
         }
