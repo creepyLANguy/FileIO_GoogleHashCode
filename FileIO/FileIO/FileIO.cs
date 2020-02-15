@@ -1,22 +1,4 @@
-﻿/*
- * Requirements:
- * 
- * Read in a text file
- * Default location (execution path) or specify location relative to execution path
- * Default file extension (.in?) or specify file extension
- * Read lines into list
- * Read key value pairs into dictionary
- * Read kv pairs with default delimiter (','?) or specifiy delim
- * 
- * Save file
- * Save location default (execution path) or relative path to execution path
- * Output filename default to input filename plus suffix, or specifiy output filename
- * Output file extension default (.in?) or specify extension
- *
- * Implicit Error handling
- */
-
-using System;
+﻿using System;
 using System.IO;
 using System.Collections.Generic;
 
@@ -24,15 +6,33 @@ namespace GoogleHashCode
 {
     class FileIO
     {
+        /*
+         * Requirements:
+         * 
+         * Read in a text file
+         * Default location (execution path) or specify location relative to execution path
+         * Default file extension (.in?) or specify file extension
+         * Read lines into list
+         * Read key value pairs into dictionary
+         * Read kv pairs with default delimiter (','?) or specifiy delim
+         * 
+         * Save file
+         * Save location default (execution path) or relative path to execution path
+         * Output filename default to input filename plus suffix, or specifiy output filename
+         * Output file extension default (.in?) or specify extension
+         *
+         * Implicit Error handling
+         */
+
         private struct Defaults
         {
             public const string EXTENSION = ".in";
             public const string PATH = "";
-            //public const string DELIMITER = ",";
+            public const string DELIMITER = ",";
         };
 
         private static string GetFullPath(
-            string name,
+            string filename,
             string extension,
             string relativePath
             )
@@ -45,22 +45,22 @@ namespace GoogleHashCode
             {
                 extension += '.';
             }
-            if (name.Contains(extension))
+            if (filename.Contains(extension))
             {
                 extension = "";
             }
 
-            return relativePath + name + extension;
+            return relativePath + filename + extension;
         }
 
 
         public static List<string> Read(
-            string name,
+            string filename,
             string extension = Defaults.EXTENSION,
             string relativePath = Defaults.PATH
             )
         {
-            string fullPath = GetFullPath(name, extension, relativePath);
+            string fullPath = GetFullPath(filename, extension, relativePath);
 
             List<string> list = new List<string>();
             try
@@ -90,14 +90,19 @@ namespace GoogleHashCode
 
         public static Dictionary<string, string> Read(
             string keyValDelimiter,// = Defaults.DELIMITER
-            string name,
+            string filename,
             string extension = Defaults.EXTENSION,
             string relativePath = Defaults.PATH
             )
         {
             Dictionary<string, string> dictionary = new Dictionary<string, string>();
 
-            List<string> list = Read(name, extension, relativePath);
+            if (keyValDelimiter.Length == 0)
+            {
+                keyValDelimiter = Defaults.DELIMITER;
+            }
+
+            List<string> list = Read(filename, extension, relativePath);
             foreach(string line in list)
             {
                 int delimIndex = line.IndexOf(keyValDelimiter);
@@ -112,13 +117,13 @@ namespace GoogleHashCode
 
         public static bool Write(
             string contents,
-            string name,
+            string filename,
             string extension = Defaults.EXTENSION,
             string relativePath = Defaults.PATH,
             bool appendOnly = false
             )
         {
-            string fullPath = GetFullPath(name, extension, relativePath);
+            string fullPath = GetFullPath(filename, extension, relativePath);
             try
             {
                 //if (Directory.Exists(relativePath) == false)
@@ -151,29 +156,31 @@ namespace GoogleHashCode
 
         public static bool Append(
             string contents,
-            string name,
+            string filename,
             string extension = Defaults.EXTENSION,
             string relativePath = Defaults.PATH
             )
         {
-            return Write(contents, name, extension, relativePath, true);
+            return Write(contents, filename, extension, relativePath, true);
         }
 
     }
+
 
     class Program
     {
         private static string ProcessList(List<string> list)
         {
             string buffer = "";
-            foreach (var s in list)
+            foreach (string s in list)
             {
                 buffer += s + "\r\n";
             }
             return buffer;
         }
 
-        static void Main(string[] args)
+
+        public static void Main(string[] args)
         {
             string[] inputFileNames =
                 {
