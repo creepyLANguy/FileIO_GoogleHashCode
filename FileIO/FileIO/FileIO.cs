@@ -20,18 +20,17 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 
-namespace FileIO
+namespace GoogleHashCode
 {
-    struct Defaults
-    {
-        public const string EXTENSION = ".in";
-        public const string PATH = "";
-        public const string DELIMITER = ",";
-    };
-
-
     class FileIO
     {
+        private struct Defaults
+        {
+            public const string EXTENSION = ".in";
+            public const string PATH = "";
+            //public const string DELIMITER = ",";
+        };
+
         private static string GetFullPath(
             string name,
             string extension,
@@ -56,16 +55,6 @@ namespace FileIO
 
 
         public static List<string> Read(
-            string name,
-            string extension = Defaults.EXTENSION,
-            string relativePath = Defaults.PATH
-            )
-        {
-            return Read_As_List(name, extension, relativePath);
-        }
-
-
-        public static List<string> Read_As_List(
             string name,
             string extension = Defaults.EXTENSION,
             string relativePath = Defaults.PATH
@@ -99,21 +88,21 @@ namespace FileIO
         }
 
 
-        public static Dictionary<string, string> Read_As_Dictionary(
+        public static Dictionary<string, string> Read(
+            string keyValDelimiter,// = Defaults.DELIMITER
             string name,
             string extension = Defaults.EXTENSION,
-            string relativePath = Defaults.PATH,
-            string delim = Defaults.DELIMITER
+            string relativePath = Defaults.PATH
             )
         {
             Dictionary<string, string> dictionary = new Dictionary<string, string>();
 
-            List<string> list = Read_As_List(name, extension, relativePath);
-            foreach(string s in list)
+            List<string> list = Read(name, extension, relativePath);
+            foreach(string line in list)
             {
-                int delimIndex = s.IndexOf(delim);
-                string key = s.Substring(0, delimIndex);
-                string value = s.Substring(delimIndex + 1);
+                int delimIndex = line.IndexOf(keyValDelimiter);
+                string key = line.Substring(0, delimIndex);
+                string value = line.Substring(delimIndex + keyValDelimiter.Length);
                 dictionary.Add(key, value);
             }
 
@@ -126,7 +115,7 @@ namespace FileIO
             string name,
             string extension = Defaults.EXTENSION,
             string relativePath = Defaults.PATH,
-            bool append = false
+            bool appendOnly = false
             )
         {
             string fullPath = GetFullPath(name, extension, relativePath);
@@ -138,7 +127,7 @@ namespace FileIO
                 }
 
                 Console.WriteLine("Attempting to write to " + fullPath);
-                if (append)
+                if (appendOnly)
                 {
                     File.AppendAllText(fullPath, contents);
                 }
@@ -147,8 +136,6 @@ namespace FileIO
                     File.WriteAllText(fullPath, contents);
                 }
                 Console.WriteLine("Successfully written to " + fullPath);
-
-                return true;
             }
             catch (Exception e)
             {
@@ -157,6 +144,8 @@ namespace FileIO
 
                 return false;
             }
+
+            return true;
         }
 
 
@@ -170,5 +159,46 @@ namespace FileIO
             return Write(contents, name, extension, relativePath, true);
         }
 
+    }
+
+    class Program
+    {
+        private static string ProcessList(List<string> list)
+        {
+            string buffer = "";
+            foreach (var s in list)
+            {
+                buffer += s + "\r\n";
+            }
+            return buffer;
+        }
+
+        static void Main(string[] args)
+        {
+            string[] inputFileNames =
+                {
+                    "a_example",
+                    "b_small",
+                    "c_medium",
+                    "d_quite_big",
+                    "e_also_big"
+                };
+
+            string inputPath = "hashcode";
+
+            string outputPath = "results";
+
+            foreach (string fileName in inputFileNames)
+            {
+                List<string> list = FileIO.Read(fileName, relativePath: inputPath);
+
+                string resultsBuffer = ProcessList(list);
+
+                if (resultsBuffer.Length > 0)
+                {
+                    FileIO.Write(resultsBuffer, fileName, ".txt", relativePath: outputPath);
+                }
+            }
+        }
     }
 }
