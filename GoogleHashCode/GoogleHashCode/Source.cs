@@ -9,6 +9,7 @@ namespace GoogleHashCode
     {
         public const string EXTENSION = ".in";
         public const string PATH = "";
+        public const char DOT = '.';
         public const string DELIMITER_KEYVAL = ",";
         public const string DELIMITER_SPACE = " ";
     };
@@ -20,7 +21,7 @@ namespace GoogleHashCode
         {
             Dictionary<string, string> dictionary = new Dictionary<string, string>();
 
-            if (keyValDelimiter.Length == 0)
+            if (keyValDelimiter == null || keyValDelimiter.Length == 0)
             {
                 keyValDelimiter = Defaults.DELIMITER_KEYVAL;
             }
@@ -75,9 +76,9 @@ namespace GoogleHashCode
             {
                 relativePath += Path.DirectorySeparatorChar;
             }
-            if (extension.Length > 0 && extension[0] != '.')
+            if (extension.Length > 0 && extension[0] != Defaults.DOT)
             {
-                extension += '.';
+                extension += Defaults.DOT;
             }
             if (filename.Contains(extension))
             {
@@ -182,8 +183,8 @@ namespace GoogleHashCode
             }
             catch (Exception e)
             {
-                Console.WriteLine("FAILED TO WRITE TO " + fullPath
-                    + "\r\n\r\n" + e.ToString());
+                Console.WriteLine(
+                    "FAILED TO WRITE TO " + fullPath + "\r\n" + e.ToString());
 
                 return false;
             }
@@ -229,9 +230,11 @@ namespace GoogleHashCode
                 List<string> propertiesList =
                     Helpers.StringToList(FileIO.Read_FirstLine(filename, relativePath: inputPath));
 
-                List<string> list = FileIO.Read(filename, relativePath: inputPath, ignoreFirstLine: true);
+                List<string> list =
+                    FileIO.Read(filename, relativePath: inputPath, ignoreFirstLine: true);
 
-                string resultsBuffer = Logic.Run(propertiesList, list);
+                string resultsBuffer =
+                    Logic.Run(propertiesList, list);
 
                 FileIO.Write(resultsBuffer, filename, outputExtension, relativePath: outputPath);
             }
