@@ -1,48 +1,9 @@
 ﻿using System;
-using System.IO;
 using System.Collections.Generic;
-using System.Linq;
+using System.IO;
 
 namespace GoogleHashCode
 {
-    struct Defaults
-    {
-        public const string EXTENSION = ".in";
-        public const string PATH = "";
-        public const char DOT = '.';
-        public const string DELIMITER_KEYVAL = ",";
-        public const string DELIMITER_SPACE = " ";
-    };
-
-
-    class Helpers
-    {
-        public static Dictionary<string, string> ListToDictionary(List<string> list, string keyValDelimiter)
-        {
-            Dictionary<string, string> dictionary = new Dictionary<string, string>();
-
-            if (keyValDelimiter == null || keyValDelimiter.Length == 0)
-            {
-                keyValDelimiter = Defaults.DELIMITER_KEYVAL;
-            }
-
-            foreach (string line in list)
-            {
-                int delimIndex = line.IndexOf(keyValDelimiter);
-                string key = line.Substring(0, delimIndex);
-                string value = line.Substring(delimIndex + keyValDelimiter.Length);
-                dictionary.Add(key, value);
-            }
-
-            return dictionary;
-        }
-
-        public static List<string> StringToList(string input, string delimiter = Defaults.DELIMITER_SPACE)
-        {
-            return input.Split(delimiter).ToList();
-        }
-    }
-
 
     class FileIO
     {
@@ -114,7 +75,7 @@ namespace GoogleHashCode
                     list.Add(s);
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Console.WriteLine("FAILED TO OPEN " + fullPath
                     + "\r\n\r\n" + e.ToString());
@@ -205,60 +166,4 @@ namespace GoogleHashCode
 
     }
 
-    ////////////////////////////////////////////////////////////////////////////
-
-    class Program
-    {
-        public static void Main(string[] args)
-        {
-            string[] inputFilenames =
-                {
-                    "a_example",
-                    "b_small",
-                    "c_medium",
-                    "d_quite_big",
-                    "e_also_big"
-                };
-
-            string inputPath = "hashcode";
-
-            string outputPath = "results";
-            string outputExtension = ".txt";
-
-            foreach (string filename in inputFilenames)
-            {
-                List<string> propertiesList =
-                    Helpers.StringToList(FileIO.Read_FirstLine(filename, relativePath: inputPath));
-
-                List<string> list =
-                    FileIO.Read(filename, relativePath: inputPath, ignoreFirstLine: true);
-
-                string resultsBuffer =
-                    Logic.Run(propertiesList, list);
-
-                FileIO.Write(resultsBuffer, filename, outputExtension, relativePath: outputPath);
-            }
-        }
-    }
-
-    ////////////////////////////////////////////////////////////////////////////
-    
-    class Logic
-    {
-        public static string Run(List<string> properties, List<string> list)
-        {
-            string buffer = "";
-
-            //Do things...
-            /*
-            foreach(string s in list)
-            {
-                List<string> values = Helpers.StringToList(s);
-            }
-            */
-
-            return buffer;
-        }
-
-    }
 }
