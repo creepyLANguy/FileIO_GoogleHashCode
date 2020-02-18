@@ -1,9 +1,48 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace GoogleHashCode
 {
+    struct Defaults
+    {
+        public const string EXTENSION = ".in";
+        public const string PATH = "";
+        public const string DELIMITER_KEYVAL = ",";
+        public const string DELIMITER_SPACE = " ";
+    };
+
+
+    class Helpers
+    {
+        public static Dictionary<string, string> ListToDictionary(List<string> list, string keyValDelimiter)
+        {
+            Dictionary<string, string> dictionary = new Dictionary<string, string>();
+
+            if (keyValDelimiter.Length == 0)
+            {
+                keyValDelimiter = Defaults.DELIMITER_KEYVAL;
+            }
+
+            foreach (string line in list)
+            {
+                int delimIndex = line.IndexOf(keyValDelimiter);
+                string key = line.Substring(0, delimIndex);
+                string value = line.Substring(delimIndex + keyValDelimiter.Length);
+                dictionary.Add(key, value);
+            }
+
+            return dictionary;
+        }
+
+        public static List<string> StringToList(string input, string delimiter = Defaults.DELIMITER_SPACE)
+        {
+            return input.Split(delimiter).ToList();
+        }
+    }
+
+
     class FileIO
     {
         /*
@@ -15,6 +54,8 @@ namespace GoogleHashCode
          * Read lines into list
          * Read key value pairs into dictionary
          * Read kv pairs with default delimiter (','?) or specifiy delim
+         * Read in just the forst line (usually contains properties)
+         * Ignore the first line (properties) and read rest of file
          * 
          * Save file
          * Save location default (execution path) or relative path to execution path
@@ -23,13 +64,6 @@ namespace GoogleHashCode
          *
          * Implicit Error handling
          */
-
-        private struct Defaults
-        {
-            public const string EXTENSION = ".in";
-            public const string PATH = "";
-            public const string DELIMITER = ",";
-        };
 
         private static string GetFullPath(
             string filename,
@@ -57,7 +91,8 @@ namespace GoogleHashCode
         public static List<string> Read(
             string filename,
             string extension = Defaults.EXTENSION,
-            string relativePath = Defaults.PATH
+            string relativePath = Defaults.PATH,
+            bool ignoreFirstLine = false
             )
         {
             string fullPath = GetFullPath(filename, extension, relativePath);
@@ -84,34 +119,37 @@ namespace GoogleHashCode
                     + "\r\n\r\n" + e.ToString());
             }
 
+            if (ignoreFirstLine)
+            {
+                list.RemoveAt(0);
+            }
+
             return list;
         }
 
 
         public static Dictionary<string, string> Read(
-            string keyValDelimiter,// = Defaults.DELIMITER
+            string keyValDelimiter,
+            string filename,
+            string extension = Defaults.EXTENSION,
+            string relativePath = Defaults.PATH,
+            bool ignoreFirstLine = false
+            )
+        {
+            List<string> list = Read(filename, extension, relativePath, ignoreFirstLine);
+            return Helpers.ListToDictionary(list, keyValDelimiter);
+        }
+
+
+        public static string Read_FirstLine(
             string filename,
             string extension = Defaults.EXTENSION,
             string relativePath = Defaults.PATH
             )
         {
-            Dictionary<string, string> dictionary = new Dictionary<string, string>();
-
-            if (keyValDelimiter.Length == 0)
-            {
-                keyValDelimiter = Defaults.DELIMITER;
-            }
-
-            List<string> list = Read(filename, extension, relativePath);
-            foreach(string line in list)
-            {
-                int delimIndex = line.IndexOf(keyValDelimiter);
-                string key = line.Substring(0, delimIndex);
-                string value = line.Substring(delimIndex + keyValDelimiter.Length);
-                dictionary.Add(key, value);
-            }
-
-            return dictionary;
+            //I know this is silly, but I don't want to duplicate the Read code.
+            List<string> list = Read(filename, extension, relativePath, false);
+            return list[0];
         }
 
 
@@ -169,13 +207,18 @@ namespace GoogleHashCode
 
     class Program
     {
-        private static string ProcessList(List<string> list)
+        private static string Process(List<string> properties, List<string> list)
         {
             string buffer = "";
-            foreach (string s in list)
+
+            //Do things...
+            /*
+            foreach(string s in list)
             {
-                buffer += s + "\r\n";
+                List<string> values = Helpers.StringToList(s);
             }
+            */
+
             return buffer;
         }
 
@@ -198,14 +241,14 @@ namespace GoogleHashCode
 
             foreach (string filename in inputFilenames)
             {
-                List<string> list = FileIO.Read(filename, relativePath: inputPath);
+                List<string> propertiesList =
+                    Helpers.StringToList(FileIO.Read_FirstLine(filename, relativePath: inputPath));
 
-                string resultsBuffer = ProcessList(list);
+                List<string> list = FileIO.Read(filename, relativePath: inputPath, ignoreFirstLine: true);
 
-                if (resultsBuffer.Length > 0)
-                {
-                    FileIO.Write(resultsBuffer, filename, outputExtension, relativePath: outputPath);
-                }
+                string resultsBuffer = Process(propertiesList, list);
+
+                FileIO.Write(resultsBuffer, filename, outputExtension, relativePath: outputPath);
             }
         }
     }
