@@ -204,25 +204,10 @@ namespace GoogleHashCode
 
     }
 
+    ////////////////////////////////////////////////////////////////////////////
 
     class Program
     {
-        private static string Process(List<string> properties, List<string> list)
-        {
-            string buffer = "";
-
-            //Do things...
-            /*
-            foreach(string s in list)
-            {
-                List<string> values = Helpers.StringToList(s);
-            }
-            */
-
-            return buffer;
-        }
-
-
         public static void Main(string[] args)
         {
             string[] inputFilenames =
@@ -246,10 +231,31 @@ namespace GoogleHashCode
 
                 List<string> list = FileIO.Read(filename, relativePath: inputPath, ignoreFirstLine: true);
 
-                string resultsBuffer = Process(propertiesList, list);
+                string resultsBuffer = Logic.Run(propertiesList, list);
 
                 FileIO.Write(resultsBuffer, filename, outputExtension, relativePath: outputPath);
             }
         }
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    
+    class Logic
+    {
+        public static string Run(List<string> properties, List<string> list)
+        {
+            string buffer = "";
+
+            //Do things...
+            /*
+            foreach(string s in list)
+            {
+                List<string> values = Helpers.StringToList(s);
+            }
+            */
+
+            return buffer;
+        }
+
     }
 }
