@@ -22,14 +22,14 @@ namespace GoogleHashCode
 
             foreach (string filename in inputFilenames)
             {
-                List<int> propertiesList =
-                    Helpers.StringToList<int>(FileIO.Read_FirstLine(filename, relativePath: inputPath));
+                List<string> propertiesList =
+                    Helpers.StringToList<string>(FileIO.Read_FirstLine(filename, relativePath: inputPath));
 
-                List<string> pizzas =
+                List<string> valuesList =
                     FileIO.Read(filename, relativePath: inputPath, ignoreFirstLine: true);
 
                 string resultsBuffer =
-                    Logic.Run(propertiesList[0], propertiesList[1], pizzas);
+                    Logic.Run(propertiesList, valuesList);
 
                 FileIO.Write(resultsBuffer, filename, outputExtension, relativePath: outputPath);
             }
