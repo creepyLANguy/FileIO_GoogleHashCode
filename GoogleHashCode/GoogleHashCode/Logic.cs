@@ -10,22 +10,36 @@ namespace GoogleHashCode
 
             List<int> pizzaList = Helpers.StringToList<int>(pizzas[0]);
 
-            int sum = 0;
-            int typesUsed = 0;
-            string pizzasUsed = "";
 
-            for (int i = pizzaList.Count - 1; i >= 0; --i)
+            int maxSum = 0;
+
+            for (int runner = pizzaList.Count - 1; runner >= 0; --runner)
             {
-                if ((sum + pizzaList[i]) <= maxSlices)
+                int sum = 0;
+                int typesUsed = 0;
+                string pizzasUsed = "";
+
+                for (int i = runner; i >= 0; --i)
                 {
-                    sum += pizzaList[i];
-                    pizzasUsed = i + " " + pizzasUsed;
-                    ++typesUsed;
+                    if ((sum + pizzaList[i]) <= maxSlices)
+                    {
+                        sum += pizzaList[i];
+                        pizzasUsed = i + " " + pizzasUsed;
+                        ++typesUsed;
+                    }
+                }
+
+                if (sum >= maxSum)
+                {
+                    maxSum = sum;
+                    buffer = typesUsed + "\n" + pizzasUsed;
+                }
+                else
+                {
+                    break;
                 }
             }
 
-            buffer += typesUsed + "\n";
-            buffer += pizzasUsed;
             return buffer;
         }
 
