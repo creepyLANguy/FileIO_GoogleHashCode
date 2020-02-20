@@ -9,10 +9,6 @@ namespace GoogleHashCode
             string[] inputFilenames =
                 {
                     "a_example",
-                    "b_small",
-                    "c_medium",
-                    "d_quite_big",
-                    "e_also_big"
                 };
 
             string inputPath = "hashcode";
@@ -22,14 +18,18 @@ namespace GoogleHashCode
 
             foreach (string filename in inputFilenames)
             {
-                List<string> propertiesList =
-                    Helpers.StringToList<string>(FileIO.Read_FirstLine(filename, relativePath: inputPath));
+                List<int> propertiesList =
+                    Helpers.StringToList<int>(FileIO.Read_FirstLine(filename, relativePath: inputPath));
 
-                List<string> valuesList =
+                List<string> librariesList =
                     FileIO.Read(filename, relativePath: inputPath, ignoreFirstLine: true);
 
+                string bookScores = librariesList[0];
+
+                librariesList.RemoveAt(0);
+
                 string resultsBuffer =
-                    Logic.Run(propertiesList, valuesList);
+                    Logic.Run(propertiesList, bookScores, librariesList);
 
                 FileIO.Write(resultsBuffer, filename, outputExtension, relativePath: outputPath);
             }

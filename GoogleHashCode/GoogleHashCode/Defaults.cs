@@ -2,7 +2,7 @@
 {
     struct Defaults
     {
-        public const string EXTENSION = ".in";
+        public const string EXTENSION = ".txt";
         public const string PATH = "";
         public const char DOT = '.';
         public const string DELIMITER_KEYVAL = ",";
