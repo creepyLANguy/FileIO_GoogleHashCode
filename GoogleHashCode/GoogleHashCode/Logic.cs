@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace GoogleHashCode
 {
@@ -33,6 +34,12 @@ namespace GoogleHashCode
                 {
                     maxSum = sum;
                     buffer = typesUsed + "\n" + pizzasUsed;
+                    //Console.WriteLine(maxSum + "/" + maxSlices);
+
+                    if (sum == maxSlices)
+                    {
+                        break;
+                    }
                 }
                 else
                 {
@@ -40,6 +47,7 @@ namespace GoogleHashCode
                 }
             }
 
+            Console.WriteLine(maxSum + "/" + maxSlices);
             return buffer;
         }
 
