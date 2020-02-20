@@ -5,9 +5,9 @@ namespace GoogleHashCode
 {
     class Helpers
     {
-        public static Dictionary<string, string> ListToDictionary(List<string> list, string keyValDelimiter)
+        public static Dictionary<K, V> ListToDictionary<K, V, L>(List<string> list, string keyValDelimiter)
         {
-            Dictionary<string, string> dictionary = new Dictionary<string, string>();
+            Dictionary<K, V> dictionary = new Dictionary<K, V>();
 
             if (keyValDelimiter == null || keyValDelimiter.Length == 0)
             {
@@ -17,8 +17,13 @@ namespace GoogleHashCode
             foreach (string line in list)
             {
                 int delimIndex = line.IndexOf(keyValDelimiter);
-                string key = line.Substring(0, delimIndex);
-                string value = line.Substring(delimIndex + keyValDelimiter.Length);
+
+                string key_string = line.Substring(0, delimIndex);
+                K key = TConverter.ChangeType<K>(key_string);
+
+                string value_string = line.Substring(delimIndex + keyValDelimiter.Length);
+                V value = TConverter.ChangeType<V>(value_string);
+
                 dictionary.Add(key, value);
             }
 

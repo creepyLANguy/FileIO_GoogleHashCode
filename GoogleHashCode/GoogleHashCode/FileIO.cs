@@ -90,7 +90,7 @@ namespace GoogleHashCode
         }
 
 
-        public static Dictionary<string, string> Read(
+        public static Dictionary<K, V> Read<K, V>(
             string keyValDelimiter,
             string filename,
             string extension = Defaults.EXTENSION,
@@ -99,7 +99,7 @@ namespace GoogleHashCode
             )
         {
             List<string> list = Read(filename, extension, relativePath, ignoreFirstLine);
-            return Helpers.ListToDictionary(list, keyValDelimiter);
+            return Helpers.ListToDictionary<K, V, string>(list, keyValDelimiter);
         }
 
 
