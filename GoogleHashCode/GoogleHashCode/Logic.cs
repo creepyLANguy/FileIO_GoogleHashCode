@@ -17,7 +17,7 @@ namespace GoogleHashCode
         public long maxScore;
 
         public SortedList<int, Book> books = new SortedList<int, Book>();
-        public List<KeyValuePair<int, Book>> books_plain = new List<KeyValuePair<int, Book>>();
+        //public List<KeyValuePair<int, Book>> books_plain = new List<KeyValuePair<int, Book>>();
     }
 
     class Logic
@@ -90,7 +90,9 @@ namespace GoogleHashCode
                 libraryList.Add(lib.maxScore, lib);
             }
 
-            List<KeyValuePair<long, Library>> libraries_plain = libraryList.Reverse().ToList();
+
+
+            //List<KeyValuePair<long, Library>> libraries_plain = libraryList.Reverse().ToList();
 
 
 
