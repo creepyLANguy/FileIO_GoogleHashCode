@@ -17,6 +17,7 @@ namespace GoogleHashCode
         public long maxScore;
 
         public SortedList<int, Book> books = new SortedList<int, Book>();
+        public List<KeyValuePair<int, Book>> books_plain = new List<KeyValuePair<int, Book>>();
     }
 
     class Logic
@@ -39,11 +40,10 @@ namespace GoogleHashCode
             //        sum += lib.books[j].score;
             //    }
             //}
-
             int booksToGet = usableDays / lib.booksPerDay + usableDays % lib.booksPerDay;
             for (int j = 0; j < booksToGet && j < lib.books.Count; j++)
             {
-                sum += lib.books[j].score;
+                sum += lib.books_plain[j].Value.score;
             }
 
             return sum;
@@ -77,24 +77,20 @@ namespace GoogleHashCode
                     booksList.Add(currentScore, new Book() { id = currentBookId, score = currentScore });
                 }
 
-                //AL.
-                booksList.Reverse();
-                //
-
                 Library lib = new Library()
                 {
                     signupDays = libProps[1],
                     booksPerDay = libProps[2],
-                    books = booksList
+                    books = booksList,
+                    books_plain = booksList.Reverse().ToList()
                 };
 
                 lib.maxScore = GetMaxScore(maxDays, lib);
 
-
                 libraryList.Add(lib.maxScore, lib);
             }
 
-            librariesList.Reverse();
+            List<KeyValuePair<long, Library>> libraries_plain = libraryList.Reverse().ToList();
 
 
 
