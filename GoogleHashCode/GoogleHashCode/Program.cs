@@ -14,7 +14,7 @@ namespace GoogleHashCode
             string inputPath = "hashcode";
 
             string outputPath = "results";
-            string outputExtension = ".txt";
+            string outputExtension = ".out";
 
             foreach (string filename in inputFilenames)
             {
